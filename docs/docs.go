@@ -16,23 +16,23 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/widgets": {
+        "/documents": {
             "get": {
-                "description": "Get all available widgets",
+                "description": "Get all available documents",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Widgets"
+                    "documents"
                 ],
-                "summary": "Get all widgets",
+                "summary": "Get all documents",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/types.Widget"
+                                "$ref": "#/definitions/types.Document"
                             }
                         }
                     },
@@ -48,7 +48,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new widget",
+                "description": "Create a new document",
                 "consumes": [
                     "application/json"
                 ],
@@ -56,14 +56,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Widgets"
+                    "documents"
                 ],
-                "summary": "Create a new Widget",
+                "summary": "Create a new document",
                 "responses": {
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/types.Widget"
+                            "$ref": "#/definitions/types.Document"
                         }
                     },
                     "400": {
@@ -87,20 +87,20 @@ const docTemplate = `{
                 }
             }
         },
-        "/widgets/{id}": {
+        "/documents/{id}": {
             "get": {
-                "description": "Get a widget by its ID",
+                "description": "Get a document by its ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Widgets"
+                    "documents"
                 ],
-                "summary": "Get a widget by ID",
+                "summary": "Get a document by ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Widget ID",
+                        "description": "document ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -110,7 +110,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.Widget"
+                            "$ref": "#/definitions/types.Document"
                         }
                     },
                     "404": {
@@ -134,7 +134,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update an existing widget",
+                "description": "Update an existing document",
                 "consumes": [
                     "application/json"
                 ],
@@ -142,13 +142,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Widgets"
+                    "documents"
                 ],
-                "summary": "Update a widget",
+                "summary": "Update a document",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Widget ID",
+                        "description": "document ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -158,7 +158,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/types.Widget"
+                            "$ref": "#/definitions/types.Document"
                         }
                     },
                     "400": {
@@ -191,15 +191,15 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a widget by its ID",
+                "description": "Delete a document by its ID",
                 "tags": [
-                    "Widgets"
+                    "documents"
                 ],
-                "summary": "Delete a widget",
+                "summary": "Delete a document",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Widget ID",
+                        "description": "document ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -232,7 +232,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "types.Widget": {
+        "types.Document": {
             "type": "object",
             "properties": {
                 "created_at": {
@@ -251,13 +251,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "BearerAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }`

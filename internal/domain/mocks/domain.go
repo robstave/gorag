@@ -12,22 +12,22 @@ type Domain struct {
 	mock.Mock
 }
 
-// CreateWidget provides a mock function with given fields: widget
-func (_m *Domain) CreateWidget(widget types.Widget) (*types.Widget, error) {
-	ret := _m.Called(widget)
+// Createdocument provides a mock function with given fields: document
+func (_m *Domain) Createdocument(document types.Document) (*types.Document, error) {
+	ret := _m.Called(document)
 
-	var r0 *types.Widget
-	if rf, ok := ret.Get(0).(func(types.Widget) *types.Widget); ok {
-		r0 = rf(widget)
+	var r0 *types.Document
+	if rf, ok := ret.Get(0).(func(types.Document) *types.Document); ok {
+		r0 = rf(document)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*types.Widget)
+			r0 = ret.Get(0).(*types.Document)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(types.Widget) error); ok {
-		r1 = rf(widget)
+	if rf, ok := ret.Get(1).(func(types.Document) error); ok {
+		r1 = rf(document)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -35,13 +35,13 @@ func (_m *Domain) CreateWidget(widget types.Widget) (*types.Widget, error) {
 	return r0, r1
 }
 
-// DeleteWidget provides a mock function with given fields: widgetID
-func (_m *Domain) DeleteWidget(widgetID string) error {
-	ret := _m.Called(widgetID)
+// Deletedocument provides a mock function with given fields: documentID
+func (_m *Domain) Deletedocument(documentID string) error {
+	ret := _m.Called(documentID)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(widgetID)
+		r0 = rf(documentID)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -49,16 +49,16 @@ func (_m *Domain) DeleteWidget(widgetID string) error {
 	return r0
 }
 
-// GetAllWidgets provides a mock function with given fields:
-func (_m *Domain) GetAllWidgets() ([]types.Widget, error) {
+// GetAlldocuments provides a mock function with given fields:
+func (_m *Domain) GetAlldocuments() ([]types.Document, error) {
 	ret := _m.Called()
 
-	var r0 []types.Widget
-	if rf, ok := ret.Get(0).(func() []types.Widget); ok {
+	var r0 []types.Document
+	if rf, ok := ret.Get(0).(func() []types.Document); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]types.Widget)
+			r0 = ret.Get(0).([]types.Document)
 		}
 	}
 
@@ -72,22 +72,22 @@ func (_m *Domain) GetAllWidgets() ([]types.Widget, error) {
 	return r0, r1
 }
 
-// GetWidgetByID provides a mock function with given fields: widgetID
-func (_m *Domain) GetWidgetByID(widgetID string) (*types.Widget, error) {
-	ret := _m.Called(widgetID)
+// GetdocumentByID provides a mock function with given fields: documentID
+func (_m *Domain) GetdocumentByID(documentID string) (*types.Document, error) {
+	ret := _m.Called(documentID)
 
-	var r0 *types.Widget
-	if rf, ok := ret.Get(0).(func(string) *types.Widget); ok {
-		r0 = rf(widgetID)
+	var r0 *types.Document
+	if rf, ok := ret.Get(0).(func(string) *types.Document); ok {
+		r0 = rf(documentID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*types.Widget)
+			r0 = ret.Get(0).(*types.Document)
 		}
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(widgetID)
+		r1 = rf(documentID)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -95,8 +95,8 @@ func (_m *Domain) GetWidgetByID(widgetID string) (*types.Widget, error) {
 	return r0, r1
 }
 
-// SeedWidget provides a mock function with given fields:
-func (_m *Domain) SeedWidget() error {
+// Seeddocument provides a mock function with given fields:
+func (_m *Domain) Seeddocument() error {
 	ret := _m.Called()
 
 	var r0 error
@@ -109,22 +109,22 @@ func (_m *Domain) SeedWidget() error {
 	return r0
 }
 
-// UpdateWidget provides a mock function with given fields: widget
-func (_m *Domain) UpdateWidget(widget types.Widget) (*types.Widget, error) {
-	ret := _m.Called(widget)
+// Updatedocument provides a mock function with given fields: document
+func (_m *Domain) Updatedocument(document types.Document) (*types.Document, error) {
+	ret := _m.Called(document)
 
-	var r0 *types.Widget
-	if rf, ok := ret.Get(0).(func(types.Widget) *types.Widget); ok {
-		r0 = rf(widget)
+	var r0 *types.Document
+	if rf, ok := ret.Get(0).(func(types.Document) *types.Document); ok {
+		r0 = rf(document)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*types.Widget)
+			r0 = ret.Get(0).(*types.Document)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(types.Widget) error); ok {
-		r1 = rf(widget)
+	if rf, ok := ret.Get(1).(func(types.Document) error); ok {
+		r1 = rf(document)
 	} else {
 		r1 = ret.Error(1)
 	}

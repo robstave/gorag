@@ -7,7 +7,7 @@ This is a simple template service written in Go with a SQLite database. It uses 
 
 ## Features
 
-- **RESTful API** for managing widgets
+- **RESTful API** for managing documents
 - **SQLite** database with auto-migration
 - **Swagger UI** for interactive API documentation (available at `/swagger/index.html#/`)
 - Structured with a clean architecture separating controllers, services, and repositories
@@ -70,11 +70,11 @@ DB_PATH - Path to the SQLite database file (default: ./gorag.db)
 PORT - Port for the service to listen on (default: 8711)
 
 ## API Endpoints
-POST /api/widgets - Create a new widget
-GET /api/widgets - Retrieve all widgets
-GET /api/widgets/{id} - Retrieve a widget by ID
-PUT /api/widgets/{id} - Update a widget
-DELETE /api/widgets/{id} - Delete a widget
+POST /api/documents - Create a new document
+GET /api/documents - Retrieve all documents
+GET /api/documents/{id} - Retrieve a document by ID
+PUT /api/documents/{id} - Update a document
+DELETE /api/documents/{id} - Delete a document
 
 ## License
 This project is licensed under the MIT License.

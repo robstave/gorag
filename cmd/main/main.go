@@ -41,8 +41,8 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	// Auto-migrate widget model
-	if err = db.AutoMigrate(&types.Widget{}); err != nil {
+	// Auto-migrate document model
+	if err = db.AutoMigrate(&types.Document{}); err != nil {
 		slogger.Error("Failed to migrate database", "error", err)
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
@@ -60,12 +60,12 @@ func main() {
 
 	// API Routes
 	api := e.Group("/api")
-	widgetGroup := api.Group("/widgets")
-	widgetGroup.POST("", ctrl.CreateWidget)
-	widgetGroup.GET("", ctrl.GetAllWidgets)
-	widgetGroup.GET("/:id", ctrl.GetWidget)
-	widgetGroup.PUT("/:id", ctrl.UpdateWidget)
-	widgetGroup.DELETE("/:id", ctrl.DeleteWidget)
+	documentGroup := api.Group("/documents")
+	documentGroup.POST("", ctrl.Createdocument)
+	documentGroup.GET("", ctrl.GetAlldocuments)
+	documentGroup.GET("/:id", ctrl.Getdocument)
+	documentGroup.PUT("/:id", ctrl.Updatedocument)
+	documentGroup.DELETE("/:id", ctrl.Deletedocument)
 
 	// Swagger endpoint
 	e.GET("/swagger/*", httpSwagger.WrapHandler)

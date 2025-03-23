@@ -1,0 +1,71 @@
+I am working on rag application with the following stack:
+- Go Backend
+- Redis
+- Swagger
+
+This code being provided is a skeleton to work with
+I would like to keep the domain, repo, controller, but will be replacing implementation
+of the repo with redis.  
+
+=== End of prompts/instructions.md ===
+
+// internal/adapters/repositories/user.go
+package repositories
+
+import (
+	"github.com/robstave/gorag/internal/domain/types"
+	"gorm.io/gorm"
+)
+
+type Repository interface {
+	GetdocumentById(id string) (*types.document, error)
+	GetAlldocuments() ([]types.document, error)
+	Createdocument(document types.document) error
+	Updatedocument(document types.document) error
+	Deletedocument(id string) error
+}
+
+type RepositorySQLite struct {
+	db *gorm.DB
+}
+
+func NewRepositorySQLite(db *gorm.DB) Repository {
+	return &RepositorySQLite{db: db}
+}
+
+func (r *RepositorySQLite) GetdocumentById(id string) (*types.document, error) {
+	var document types.document
+	result := r.db.First(&document, "id = ?", id)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &document, nil
+}
+
+func (r *RepositorySQLite) GetAlldocuments() ([]types.document, error) {
+	var documents []types.document
+	result := r.db.Find(&documents)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return documents, nil
+}
+
+func (r *RepositorySQLite) Createdocument(document types.document) error {
+	return r.db.Create(&document).Error
+}
+
+func (r *RepositorySQLite) Updatedocument(document types.document) error {
+	return r.db.Save(&document).Error
+}
+
+func (r *RepositorySQLite) Deletedocument(id string) error {
+	return r.db.Delete(&types.document{}, "id = ?", id).Error
+}
+
+
+=== End of internal/adapters/repositories/repository.go ===
+

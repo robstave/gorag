@@ -6,43 +6,43 @@ import (
 	"github.com/robstave/gorag/internal/domain/types"
 )
 
-func (s *Service) SeedWidget() error {
-	// Default widget data
-	defaultWidgets := []types.Widget{
+func (s *Service) Seeddocument() error {
+	// Default document data
+	defaultdocuments := []types.Document{
 		{
 			ID:    uuid.New().String(),
-			Name:  "Sample Widget 1",
-			Value: "This is a sample widget to demonstrate functionality",
+			Name:  "Sample document 1",
+			Value: "This is a sample document to demonstrate functionality",
 		},
 		{
 			ID:    uuid.New().String(),
-			Name:  "Sample Widget 2",
-			Value: "Another widget example for testing",
+			Name:  "Sample document 2",
+			Value: "Another document example for testing",
 		},
 	}
 
-	// Check if we already have widgets
-	existingWidgets, err := s.repo.GetAllWidgets()
+	// Check if we already have documents
+	existingdocuments, err := s.repo.GetAlldocuments()
 	if err != nil {
-		s.logger.Error("Failed to check existing widgets", "error", err)
+		s.logger.Error("Failed to check existing documents", "error", err)
 		return err
 	}
 
-	// If we already have widgets, don't seed
-	if len(existingWidgets) > 0 {
-		s.logger.Info("Database already has widgets, skipping seed")
+	// If we already have documents, don't seed
+	if len(existingdocuments) > 0 {
+		s.logger.Info("Database already has documents, skipping seed")
 		return nil
 	}
 
-	// Create the sample widgets
-	for _, widget := range defaultWidgets {
-		if err := s.repo.CreateWidget(widget); err != nil {
-			s.logger.Error("Failed to seed widget", "name", widget.Name, "error", err)
+	// Create the sample documents
+	for _, document := range defaultdocuments {
+		if err := s.repo.Createdocument(document); err != nil {
+			s.logger.Error("Failed to seed document", "name", document.Name, "error", err)
 			return err
 		}
-		s.logger.Info("Seeded widget successfully", "id", widget.ID, "name", widget.Name)
+		s.logger.Info("Seeded document successfully", "id", document.ID, "name", document.Name)
 	}
 
-	s.logger.Info("Successfully seeded initial widgets")
+	s.logger.Info("Successfully seeded initial documents")
 	return nil
 }

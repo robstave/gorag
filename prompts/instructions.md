@@ -1,7 +1,8 @@
-I am working on an application with the following stack:
+I am working on rag application with the following stack:
 - Go Backend
-- SQLite Database
+- Redis
+- Swagger
 
-You are my coding assistant. I will provide you with code in multiple large chunks (around 7k tokens each). After I paste each chunk, do not provide any analysis or commentary. Simply respond with the letter "y" to acknowledge receipt. Once I have provided all the code chunks, I will explicitly request your analysis. Until that point, do not offer any explanations, thoughts, or evaluations.
-
-Understood?
+This code being provided is a skeleton to work with
+I would like to keep the domain, repo, controller, but will be replacing implementation
+of the repo with redis.  

@@ -13,13 +13,13 @@ type Repository struct {
 	mock.Mock
 }
 
-// CreateWidget provides a mock function with given fields: widget
-func (_m *Repository) CreateWidget(widget types.Widget) error {
-	ret := _m.Called(widget)
+// Createdocument provides a mock function with given fields: document
+func (_m *Repository) Createdocument(document types.Document) error {
+	ret := _m.Called(document)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Widget) error); ok {
-		r0 = rf(widget)
+	if rf, ok := ret.Get(0).(func(types.Document) error); ok {
+		r0 = rf(document)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -27,8 +27,8 @@ func (_m *Repository) CreateWidget(widget types.Widget) error {
 	return r0
 }
 
-// DeleteWidget provides a mock function with given fields: id
-func (_m *Repository) DeleteWidget(id string) error {
+// Deletedocument provides a mock function with given fields: id
+func (_m *Repository) Deletedocument(id string) error {
 	ret := _m.Called(id)
 
 	var r0 error
@@ -41,16 +41,16 @@ func (_m *Repository) DeleteWidget(id string) error {
 	return r0
 }
 
-// GetAllWidgets provides a mock function with given fields:
-func (_m *Repository) GetAllWidgets() ([]types.Widget, error) {
+// GetAlldocuments provides a mock function with given fields:
+func (_m *Repository) GetAlldocuments() ([]types.Document, error) {
 	ret := _m.Called()
 
-	var r0 []types.Widget
-	if rf, ok := ret.Get(0).(func() []types.Widget); ok {
+	var r0 []types.Document
+	if rf, ok := ret.Get(0).(func() []types.Document); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]types.Widget)
+			r0 = ret.Get(0).([]types.Document)
 		}
 	}
 
@@ -64,16 +64,16 @@ func (_m *Repository) GetAllWidgets() ([]types.Widget, error) {
 	return r0, r1
 }
 
-// GetWidgetById provides a mock function with given fields: id
-func (_m *Repository) GetWidgetById(id string) (*types.Widget, error) {
+// GetdocumentById provides a mock function with given fields: id
+func (_m *Repository) GetdocumentById(id string) (*types.Document, error) {
 	ret := _m.Called(id)
 
-	var r0 *types.Widget
-	if rf, ok := ret.Get(0).(func(string) *types.Widget); ok {
+	var r0 *types.Document
+	if rf, ok := ret.Get(0).(func(string) *types.Document); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*types.Widget)
+			r0 = ret.Get(0).(*types.Document)
 		}
 	}
 
@@ -87,13 +87,13 @@ func (_m *Repository) GetWidgetById(id string) (*types.Widget, error) {
 	return r0, r1
 }
 
-// UpdateWidget provides a mock function with given fields: widget
-func (_m *Repository) UpdateWidget(widget types.Widget) error {
-	ret := _m.Called(widget)
+// Updatedocument provides a mock function with given fields: document
+func (_m *Repository) Updatedocument(document types.Document) error {
+	ret := _m.Called(document)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(types.Widget) error); ok {
-		r0 = rf(widget)
+	if rf, ok := ret.Get(0).(func(types.Document) error); ok {
+		r0 = rf(document)
 	} else {
 		r0 = ret.Error(0)
 	}

@@ -1,0 +1,315 @@
+I am working on rag application with the following stack:
+- Go Backend
+- Redis
+- Swagger
+
+This code being provided is a skeleton to work with
+I would like to keep the domain, repo, controller, but will be replacing implementation
+of the repo with redis.  
+
+=== End of prompts/instructions.md ===
+
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/robstave/gorag/docs"
+	"github.com/robstave/gorag/internal/adapters/controller"
+	"github.com/robstave/gorag/internal/adapters/repositories"
+	"github.com/robstave/gorag/internal/domain"
+	"github.com/robstave/gorag/internal/domain/types"
+	"github.com/robstave/gorag/internal/logger"
+	httpSwagger "github.com/swaggo/echo-swagger"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
+
+// @title gorag
+// @version 1.0
+// @description API documentation for gorag
+// @BasePath /api
+func main() {
+	// Initialize Logger
+	slogger := logger.InitializeLogger()
+	logger.SetLogger(slogger)
+
+	// Set database path
+	dbPath := "./gorag.db"
+	if path := os.Getenv("DB_PATH"); path != "" {
+		dbPath = path
+	}
+	slogger.Info("DBPath set", "dbpath", dbPath)
+
+	// Open SQLite database
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	if err != nil {
+		slogger.Error("Failed to connect to database", "path", dbPath, "error", err)
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Auto-migrate document model
+	if err = db.AutoMigrate(&types.document{}); err != nil {
+		slogger.Error("Failed to migrate database", "error", err)
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
+
+	// Initialize Repository, Service, and Controller
+	repo := repositories.NewRepositorySQLite(db)
+	service := domain.NewService(slogger, repo)
+	ctrl := controller.NewController(service, slogger)
+
+	// Initialize Echo instance
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
+
+	// API Routes
+	api := e.Group("/api")
+	documentGroup := api.Group("/documents")
+	documentGroup.POST("", ctrl.Createdocument)
+	documentGroup.GET("", ctrl.GetAlldocuments)
+	documentGroup.GET("/:id", ctrl.Getdocument)
+	documentGroup.PUT("/:id", ctrl.Updatedocument)
+	documentGroup.DELETE("/:id", ctrl.Deletedocument)
+
+	// Swagger endpoint
+	e.GET("/swagger/*", httpSwagger.WrapHandler)
+
+	// Start Server
+	port := "8711"
+	if p := os.Getenv("PORT"); p != "" {
+		port = p
+	}
+	slogger.Info("Starting server", "port", port)
+	if err := e.Start(":" + port); err != nil && err != http.ErrServerClosed {
+		slogger.Error("Shutting down the server", "error", err)
+		log.Fatalf("Shutting down the server: %v", err)
+	}
+}
+
+
+=== End of cmd/main/main.go ===
+
+// internal/domain/types/document.go
+package types
+
+import (
+	"time"
+)
+
+type document struct {
+	ID        string    `gorm:"primaryKey" json:"id"`
+	Name      string    `gorm:"uniqueIndex;size:100;not null" json:"name"`
+	Value     string    `gorm:"size:255;not null" json:"value"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+
+=== End of internal/domain/types/document.go ===
+
+// internal/domain/seeder.go
+package domain
+
+import (
+	"github.com/google/uuid"
+	"github.com/robstave/gorag/internal/domain/types"
+)
+
+func (s *Service) Seeddocument() error {
+	// Default document data
+	defaultdocuments := []types.document{
+		{
+			ID:    uuid.New().String(),
+			Name:  "Sample document 1",
+			Value: "This is a sample document to demonstrate functionality",
+		},
+		{
+			ID:    uuid.New().String(),
+			Name:  "Sample document 2",
+			Value: "Another document example for testing",
+		},
+	}
+
+	// Check if we already have documents
+	existingdocuments, err := s.repo.GetAlldocuments()
+	if err != nil {
+		s.logger.Error("Failed to check existing documents", "error", err)
+		return err
+	}
+
+	// If we already have documents, don't seed
+	if len(existingdocuments) > 0 {
+		s.logger.Info("Database already has documents, skipping seed")
+		return nil
+	}
+
+	// Create the sample documents
+	for _, document := range defaultdocuments {
+		if err := s.repo.Createdocument(document); err != nil {
+			s.logger.Error("Failed to seed document", "name", document.Name, "error", err)
+			return err
+		}
+		s.logger.Info("Seeded document successfully", "id", document.ID, "name", document.Name)
+	}
+
+	s.logger.Info("Successfully seeded initial documents")
+	return nil
+}
+
+
+=== End of internal/domain/seeder.go ===
+
+package domain
+
+import (
+	"log/slog"
+
+	"github.com/robstave/gorag/internal/adapters/repositories"
+	"github.com/robstave/gorag/internal/domain/types"
+)
+
+type Service struct {
+	logger *slog.Logger
+	repo   repositories.Repository
+}
+
+type Domain interface {
+	GetdocumentByID(documentID string) (*types.document, error)
+	GetAlldocuments() ([]types.document, error)
+	Createdocument(document types.document) (*types.document, error)
+	Updatedocument(document types.document) (*types.document, error)
+	Deletedocument(documentID string) error
+	Seeddocument() error
+}
+
+// internal/domain/service.go
+// ...
+func NewService(logger *slog.Logger, repo repositories.Repository) Domain {
+	service := &Service{
+		logger: logger,
+		repo:   repo,
+	}
+
+	// Seed the initial user.   This is called on every startup, but will only create the user if it doesn't already exist
+	// To reset the app, just delete the database file  ( assuming you're using the default sqlite3 database )
+	if err := service.Seeddocument(); err != nil {
+		logger.Error("Failed to seed initial user", "error", err)
+	}
+
+	return service
+}
+
+
+=== End of internal/domain/service.go ===
+
+// internal/domain/documents.go
+package domain
+
+import (
+	"errors"
+
+	"github.com/google/uuid"
+	"github.com/robstave/gorag/internal/domain/types"
+)
+
+func (s *Service) GetdocumentByID(documentID string) (*types.document, error) {
+	s.logger.Info("Retrieving document by ID", "documentID", documentID)
+
+	document, err := s.repo.GetdocumentById(documentID)
+	if err != nil {
+		s.logger.Error("Error retrieving document", "error", err)
+		return nil, err
+	}
+
+	if document == nil {
+		s.logger.Warn("document not found", "documentID", documentID)
+		return nil, errors.New("document not found")
+	}
+
+	return document, nil
+}
+
+func (s *Service) GetAlldocuments() ([]types.document, error) {
+	s.logger.Info("Retrieving all documents")
+
+	documents, err := s.repo.GetAlldocuments()
+	if err != nil {
+		s.logger.Error("Error retrieving all documents", "error", err)
+		return nil, err
+	}
+
+	return documents, nil
+}
+
+func (s *Service) Createdocument(document types.document) (*types.document, error) {
+	s.logger.Info("Creating new document", "name", document.Name)
+
+	// Generate UUID if not provided
+	if document.ID == "" {
+		document.ID = uuid.New().String()
+	}
+
+	if err := s.repo.Createdocument(document); err != nil {
+		s.logger.Error("Failed to create document", "error", err)
+		return nil, err
+	}
+
+	return &document, nil
+}
+
+func (s *Service) Updatedocument(document types.document) (*types.document, error) {
+	s.logger.Info("Updating document", "id", document.ID)
+
+	// Check if document exists
+	existingdocument, err := s.repo.GetdocumentById(document.ID)
+	if err != nil {
+		s.logger.Error("Error checking document existence", "error", err)
+		return nil, err
+	}
+
+	if existingdocument == nil {
+		s.logger.Warn("document not found for update", "id", document.ID)
+		return nil, errors.New("document not found")
+	}
+
+	if err := s.repo.Updatedocument(document); err != nil {
+		s.logger.Error("Failed to update document", "error", err)
+		return nil, err
+	}
+
+	return &document, nil
+}
+
+func (s *Service) Deletedocument(documentID string) error {
+	s.logger.Info("Deleting document", "id", documentID)
+
+	// Check if document exists
+	existingdocument, err := s.repo.GetdocumentById(documentID)
+	if err != nil {
+		s.logger.Error("Error checking document existence", "error", err)
+		return err
+	}
+
+	if existingdocument == nil {
+		s.logger.Warn("document not found for deletion", "id", documentID)
+		return errors.New("document not found")
+	}
+
+	if err := s.repo.Deletedocument(documentID); err != nil {
+		s.logger.Error("Failed to delete document", "error", err)
+		return err
+	}
+
+	return nil
+}
+
+
+=== End of internal/domain/documents.go ===
+

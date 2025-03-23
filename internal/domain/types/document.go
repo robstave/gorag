@@ -1,11 +1,11 @@
-// internal/domain/types/widget.go
+// internal/domain/types/document.go
 package types
 
 import (
 	"time"
 )
 
-type Widget struct {
+type Document struct {
 	ID        string    `gorm:"primaryKey" json:"id"`
 	Name      string    `gorm:"uniqueIndex;size:100;not null" json:"name"`
 	Value     string    `gorm:"size:255;not null" json:"value"`

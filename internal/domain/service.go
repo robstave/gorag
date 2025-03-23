@@ -13,12 +13,12 @@ type Service struct {
 }
 
 type Domain interface {
-	GetWidgetByID(widgetID string) (*types.Widget, error)
-	GetAllWidgets() ([]types.Widget, error)
-	CreateWidget(widget types.Widget) (*types.Widget, error)
-	UpdateWidget(widget types.Widget) (*types.Widget, error)
-	DeleteWidget(widgetID string) error
-	SeedWidget() error
+	GetdocumentByID(documentID string) (*types.Document, error)
+	GetAlldocuments() ([]types.Document, error)
+	Createdocument(document types.Document) (*types.Document, error)
+	Updatedocument(document types.Document) (*types.Document, error)
+	Deletedocument(documentID string) error
+	Seeddocument() error
 }
 
 // internal/domain/service.go
@@ -31,7 +31,7 @@ func NewService(logger *slog.Logger, repo repositories.Repository) Domain {
 
 	// Seed the initial user.   This is called on every startup, but will only create the user if it doesn't already exist
 	// To reset the app, just delete the database file  ( assuming you're using the default sqlite3 database )
-	if err := service.SeedWidget(); err != nil {
+	if err := service.Seeddocument(); err != nil {
 		logger.Error("Failed to seed initial user", "error", err)
 	}
 
